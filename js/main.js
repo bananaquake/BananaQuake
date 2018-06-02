@@ -276,7 +276,7 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	drawPeople(time);
+	// drawPeople( time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -286,10 +286,10 @@ function drawFrame() {
 // 	var road = global_roads[road_idx];
 // 	console.log(road);
 // }
-// for(var i = 0; i < agent_path.length-1; i++)
+// for(var i = 0; i < pos_arr.length-1; i++)
 // {
-// 	var p1 = global_points[agent_path[i]], p2 = global_points[agent_path[i+1]];
-// 	drawLine(parseFloat(p1['@lon']), parseFloat(p1['@lat']), parseFloat(p2['@lon']), parseFloat(p2['@lat']));
+// 	var p1 = pos_arr[i], p2 = pos_arr[i+1];
+// 	drawLine(p1.x, p1.y, p2.x, p2.y);
 // }
 
 // window.onresize = function() {
