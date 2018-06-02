@@ -58,7 +58,7 @@ var Graph = (function (undefined) {
 					    cost = this.road_arr[road_idx].distance;
 					    totalCost = cost + currentCost,
 					    vertexCost = costs[vertex];
-					console.log(node, vertex, road_idx, cost);
+					// console.log(node, vertex, road_idx, cost);
 
 					if ((vertexCost === undefined) || (vertexCost > totalCost)) {
 						costs[vertex] = totalCost;
@@ -132,8 +132,8 @@ var Graph = (function (undefined) {
 	var Graph = function (map, road_arr) {
 		this.map = map;
 		this.road_arr = road_arr;
-		console.log(this.map);
-		console.log(this.road_arr);
+		// console.log(this.map);
+		// console.log(this.road_arr);
 	}
 
 	Graph.prototype.findShortestPath = function (start, end) {
