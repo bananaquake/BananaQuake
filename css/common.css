@@ -52,6 +52,7 @@ footer {
     position: relative;
     top: 0;
     left: 0;
+    /* z-index: 1; */
 }
 #canv {
     width: 100%;
@@ -60,14 +61,15 @@ footer {
     position: absolute;
     top: 0;
     left: 0;
+    pointer-events:none;
 }
 #map-container {
     position: relative;
     padding: 0;
-    width: 90vw;
-    height: 60vw;
+    width: 75vw;
+    height: 50vw;
     margin: 1rem auto;
 }
 .container {
-    width: 90vw;
+    width: 75vw;
 }
