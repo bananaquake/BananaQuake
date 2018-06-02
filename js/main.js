@@ -16,3 +16,6 @@ var map = new ol.Map({
 	}),
 	interactions: []
 });
+
+var ctx = $('#canv')[0].getContext('2d');
+ctx.fillRect(100, 100, 200, 200);

@@ -45,3 +45,11 @@ a {
 footer {
     overflow: hidden;
 }
+
+.map {
+    height: 600px;
+    width: 100%;
+}
+#canv {
+    width: 100%;
+}
