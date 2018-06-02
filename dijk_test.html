@@ -3,20 +3,86 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Dijkstra</title>
-		<script src="js/file/out.js"></script>
+		<script src="js/file/out_small.js"></script>
 		<script src="js/graph.js"></script>
 		<script src="js/init.js"></script>
+		<script src="js/dist_util.js"></script>
 	</head>
 	<body>
 		<script>
 			init();
 			
-			// console.log(points['30993514']);
-			// console.log(roads[49]);
-			// console.log(graphs['30993514']);
+			console.log(global_roads[0]);
+			console.log(Object.keys(global_points).length);//39k
+			console.log(Object.keys(global_graphs).length);//38k
+
 			var graph = new Graph(global_graphs, global_roads);
-			var path = graph.findShortestPath('30993514');
-			console.log(path);
+			var path = graph.findShortestPath('2756009315');
+			console.log(path.length);
+
+			var pos_arr = new Array();
+			var idx = 1, pos_idx = 0;
+			var tmp_point = global_points[path[0]], nxt_point = global_points[path[idx]];
+			console.log(tmp_point);
+			var velocity = 0.00005;
+			var point = makeStruct("x y");
+			while(idx < path.length)
+			{
+				pos_arr[pos_idx] = new point(parseFloat(tmp_point['@lon']), parseFloat(tmp_point['@lat']));
+				pos_idx += 1;
+				var dx = parseFloat(nxt_point['@lon'])-parseFloat(tmp_point['@lon']);
+				var dy = parseFloat(nxt_point['@lat'])-parseFloat(tmp_point['@lat']);
+				var distance1 = Math.sqrt(dx*dx+dy*dy);
+				// var distance = getGreatCircleDistance(tmp_point['@lat'], tmp_point['@lon'], nxt_point['@lat'], nxt_point['@lon']);
+				if(distance1<velocity)
+				{
+					tmp_point = nxt_point;
+					idx++;
+					if(idx < path.length)
+						nxt_point = global_points[path[idx]];
+				}
+				else
+				{
+					dx = dx/distance1;
+					dy = dy/distance1;
+					var new_x = parseFloat(tmp_point['@lon'])+dx*velocity;
+					var new_y = parseFloat(tmp_point['@lat'])+dy*velocity;
+					tmp_point['@lon'] = new_x;
+					tmp_point['@lat'] = new_y;
+				}
+				idx++;
+			}
+			pos_arr[pos_idx] = new point(tmp_point['@lon'], tmp_point['@lat']);
+			// console.log(pos_arr);
+			var eps = 0.0000001;
+			for(var i = 0; i < pos_arr.length; i++)
+			{
+				var flag1 = Math.ceil(Math.random()*10)%2;
+				var flag2 = Math.ceil(Math.random()*10);
+				console.log(flag1, flag2);
+				if(flag1==0)
+				{
+					console.log(pos_arr[i].x, pos_arr[i].x+flag2*eps);
+					pos_arr[i].x = pos_arr[i].x+flag2*eps;
+					console.log(pos_arr[i].x);
+				}
+				else
+				{
+					pos_arr[i].x = pos_arr[i].x-flag2*eps;
+				}
+				flag1 = Math.ceil(Math.random()*10)%2;
+				flag2 = Math.ceil(Math.random()*10);
+				if(flag1==0)
+				{
+					pos_arr[i].y = pos_arr[i].y+flag2*eps;
+				}
+				else
+				{
+					pos_arr[i].y = pos_arr[i].y-flag2*eps;
+				}
+				
+			}
+			console.log(pos_arr);
 
 
 			// var road = makeStruct("u v distance broken exit");

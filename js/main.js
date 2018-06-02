@@ -12,7 +12,7 @@ var isDragging = false;
 var dragStart = [];
 var dragEnd = [];
 
-var data = init();
+// var data = init();
 
 var buildings_in_view = [];
 
@@ -81,6 +81,11 @@ map.addControl(geocoder);
 // 	// content.innerHTML = '<p>' + address.formatted + '</p>';
 // 	// overlay.setPosition(coord);
 // });
+
+pos_arr = simulate();
+// pos_arr = result[1];
+// agent_path = result[0];
+time = 0;
 
 
 $('#map').mouseup(function(e) {
@@ -191,6 +196,7 @@ function drawLine(x1, y1, x2, y2) {
 	ctx.restore();
 }
 
+
 function drawLine2(y1, x1, y2, x2) {
 	drawLine(x1, y1, x2, y2);
 }
@@ -206,7 +212,7 @@ function drawOnePerson(x, y) {
 	var p = coordRealToCanvas(x, y);
 	x = p[0];
 	y = p[1];
-	var size = 1;
+	var size = 5;
 	ctx.save();
 	ctx.fillStyle = "#f00";
 	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
@@ -215,14 +221,26 @@ function drawOnePerson(x, y) {
 
 function drawPeople() {
 	// draw random people
-	var people = [];
-	for (var i = 0; i < 10000; i++) {
-		people.push([random(wb, eb), random(sb, nb)]);
-	}
+	// var people = [];
+	// for (var i = 0; i < 10000; i++) {
+	// 	people.push([random(wb, eb), random(sb, nb)]);
+	// }
 
-	for (var i = 0; i < people.length; i++) {
-		drawOnePerson(people[i][0], people[i][1]);
+	// for (var i = 0; i < people.length; i++) {
+	// 	drawOnePerson(people[i][0], people[i][1]);
+	// }
+	for(var i = 0; i < pos_arr.length; i++)
+	{
+		if(time < pos_arr[i].length)
+		{
+			drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
+		}
+		// else
+		// {
+			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
+		// }
 	}
+	
 }
 
 function drawOneStation(s) {
@@ -238,8 +256,8 @@ function drawOneStation(s) {
 }
 
 function drawStations() {
-	for (var i = 0; i < data[3].length; i++) {
-		drawOneStation(data[3][i]);
+	for (var i = 0; i < global_pubs.length; i++) {
+		drawOneStation(global_pubs[i]);
 	}
 }
 
@@ -247,17 +265,30 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	// drawPeople();
-	drawStations();
+	drawPeople(time);
+	// drawStations();
 }
+// for(var i = 0; i < agent_path.length-1; i++)
+// {
+// 	var p1 = global_points[agent_path[i]], p2 = global_points[agent_path[i+1]];
+// 	var road_idx = global_graphs[p1['@id']][p2['@id']];
+// 	var road = global_roads[road_idx];
+// 	console.log(road);
+// }
+// for(var i = 0; i < agent_path.length-1; i++)
+// {
+// 	var p1 = global_points[agent_path[i]], p2 = global_points[agent_path[i+1]];
+// 	drawLine(parseFloat(p1['@lon']), parseFloat(p1['@lat']), parseFloat(p2['@lon']), parseFloat(p2['@lat']));
+// }
 
 // window.onresize = function() {
 // 	drawFrame();
 // }
 
-// window.setInterval(function() {
-// 	drawFrame();
-// }, 1500);
+window.setInterval(function() {
+	drawFrame();
+	time += 1;
+}, 50);
 
 function inView(s) {
 	return s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb;
