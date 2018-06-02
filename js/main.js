@@ -76,9 +76,10 @@ geocoder.on('addresschosen', function(evt) {
 		coord = evt.coordinate,
 		address = evt.address;
 	// some popup solution
-	content.innerHTML = '<p>' + address.formatted + '</p>';
+	// content.innerHTML = '<p>' + address.formatted + '</p>';
 	overlay.setPosition(coord);
 });
+
 
 $('#map').mouseup(function(e) {
 	isDragging = false;
@@ -219,4 +220,5 @@ function drawFrame() {
 
 $(document).ready(function() {
 	// drawFrame();
+	$('#right-panel').append($('#gcd-container'));
 });
