@@ -14,6 +14,8 @@ var dragEnd = [];
 
 // var data = init();
 
+var buildings_in_view = [];
+
 var map = new ol.Map({
 	target: 'map',
 	layers: [
@@ -71,20 +73,21 @@ var geocoder = new Geocoder('nominatim', {
 	autoComplete: true
 });
 map.addControl(geocoder);
-geocoder.on('addresschosen', function(evt) {
-	var feature = evt.feature,
-		coord = evt.coordinate,
-		address = evt.address;
-	// some popup solution
-	// content.innerHTML = '<p>' + address.formatted + '</p>';
-	overlay.setPosition(coord);
-});
+// geocoder.on('addresschosen', function(evt) {
+// 	var feature = evt.feature,
+// 		coord = evt.coordinate,
+// 		address = evt.address;
+// 	// some popup solution
+// 	// content.innerHTML = '<p>' + address.formatted + '</p>';
+// 	// overlay.setPosition(coord);
+// });
 
 var start = new Date().getTime();
 pos_arr = simulate();
 var end = new Date().getTime(); // 结束时间
 
 console.log('time:', end - start);
+
 // pos_arr = result[1];
 // agent_path = result[0];
 time = 0;
@@ -105,6 +108,7 @@ function random(a, b) {
 }
 
 function getLength(x1, y1, x2, y2) {
+	// 米
 	var points = [
 		ol.proj.transform([x1, y1], 'EPSG:4326', 'EPSG:3857'),
 		ol.proj.transform([x2, y2], 'EPSG:4326', 'EPSG:3857')
@@ -113,6 +117,33 @@ function getLength(x1, y1, x2, y2) {
 		geometry: new ol.geom.LineString(points)
 	});
 	return featureLine.getGeometry().getLength();
+}
+
+function getArea(x1, y1, x2, y2) {
+	// 平方米
+	var w = getLength(x1, y1, x2, y1);
+	var h = getLength(x1, y1, x1, y2);
+	return Math.abs(w * h);
+}
+
+function getPolyArea(poly) {
+	var points = [];
+	for (var i = 0; i < poly.length; i++) {
+		points.push(ol.proj.transform(poly[i], 'EPSG:4326', 'EPSG:3857'));
+	}
+	var geometry = new ol.geom.Polygon([points]);
+	return geometry.getArea();
+}
+
+function findNearStations(x, y) {
+	var result = [];
+	for (var i = 0; i < global_pubs.length; i++) {
+		var l = getLength(x, y, parseFloat(global_pubs[i][0]), parseFloat(global_pubs[i][1]));
+		if (l <= 2500) {
+			result.push(global_pubs[i]);
+		}
+	}
+	return result;
 }
 
 function updateBoundary() {
@@ -214,7 +245,7 @@ function drawPeople() {
 			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
 		// }
 	}
-	
+
 }
 
 function drawOneStation(s) {
@@ -226,7 +257,7 @@ function drawOneStation(s) {
 	var y = p[1];
 	var size = 4;
 	ctx.save();
-	ctx.fillStyle = s[2] ? "#55f" : "#f55";
+	ctx.fillStyle = parseInt(s[2]) ? "#55f" : "#f55";
 	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
 	ctx.restore();
 }
@@ -241,7 +272,7 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	drawPeople(time);
+	// drawPeople(time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -266,7 +297,45 @@ window.setInterval(function() {
 	time += 1;
 }, 50);
 
+function inView(s) {
+	return s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb;
+}
+
+
+
+function getBuildingsInView() {
+	buildings_in_view = [];
+	for (var i = 0; i < buildings.length; i++) {
+		var polys = buildings[i].geometry.coordinates;
+		// for (var j = 0; j < polys.length; j++) {
+		var j = 0;
+		if (polys[j].length && inView(polys[j][0])) {
+			var building = {
+				poly: polys[j],
+				id: buildings[i].id + "@" + j,
+				name: buildings[i].properties.name,
+				area: getPolyArea(polys[j])
+			};
+			buildings_in_view.push(building);
+		}
+		// }
+	}
+}
+
+function listBuildingsInView() {
+	$('#buildings-container').html('');
+	var count = 0;
+	for (var i = 0; i < buildings_in_view.length; i++) {
+		if (buildings_in_view[i].name) {
+			count++;
+			$('#buildings-container').append('<div>' + buildings_in_view[i].name + '</div>');
+		}
+		if (count > 5) break;
+	}
+	console.log(buildings_in_view);
+}
+
 $(document).ready(function() {
 	// drawFrame();
-	$('#right-panel').append($('#gcd-container'));
+	$('#right-panel').prepend($('#gcd-container'));
 });
