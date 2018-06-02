@@ -1,9 +1,10 @@
-function road(u, v, dis, width, shelter)  {
+function road(u, v, dis, width, shelter, broken = false)  {
 	this.u = u;
 	this.v = v;
 	this.dis = dis;
 	this.width = width;
 	this.shelter = shelter;
+	this.broken = false;
 }
 
 function init()  {
@@ -26,17 +27,13 @@ function init()  {
 			var dis = Math.sqrt(Math.pow(points[nds[j]]['@lon'],2) + Math.pow(points[nds[j]]['@lat'],2));
 			roads.push(new road(nds[j], nds[j+1], dis, ways[i]['@width'], ways[i]['@shelter']));
 			if (!graphs.hasOwnProperty(nds[j])) {
-				graphs[nds[j]] = new Array();
-			}
-			m = {};
-			m[nds[j+1]] = roads.length-1;
-			graphs[nds[j]].push(m);
+				graphs[nds[j]] = {};
+			} 
+			graphs[nds[j]][nds[j+1]] = roads.length-1;
 			if (!graphs.hasOwnProperty(nds[j+1])) {
-				graphs[nds[j+1]] = new Array();
+				graphs[nds[j+1]] = {};
 			}
-			m = {};
-			m[nds[j+1]] = roads.length-1;
-			graphs[nds[j+1]].push(m);
+			graphs[nds[j]][nds[j+1]] = roads.length-1;
 		}
 	}
 	return [points, roads, graphs, pubs];
