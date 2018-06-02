@@ -20,15 +20,29 @@ var map = new ol.Map({
 		zoom: 14
 	}),
 	controls: ol.control.defaults({
-		zoom: false,
-		rotate: false,
+		// zoom: false,
+		// rotate: false,
 		attribution: false
 	}),
-	interactions: []
+	// interactions: []
 });
 
 var ctx = $('#canv')[0].getContext('2d');
+// map.on('click', function(ev) {
+// 	console.log(ev);
+// });
 
+map.on(['postrender'], function(ev) {
+	// console.log(ev);
+	drawFrame();
+});
+
+function random(a, b) {
+	var r = Math.random();
+	r *= (b - a);
+	r += a;
+	return r;
+}
 
 function coordRealToCanvas(x, y) {
 	// 输入经纬度，返回mask layer的坐标
@@ -65,16 +79,43 @@ function drawBoundary() {
 	drawLine(wb, nb, wb, sb);
 }
 
+function drawOnePerson(x, y) {
+	var p = coordRealToCanvas(x, y);
+	x = p[0];
+	y = p[1];
+	var size = 1;
+	ctx.save();
+	ctx.fillStyle = "#f00";
+	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
+	ctx.restore();
+}
+
+function drawPeople() {
+	// draw random people
+	var people = [];
+	for (var i = 0; i < 10000; i++) {
+		people.push([random(wb, eb), random(sb, nb)]);
+	}
+
+	for (var i = 0; i < people.length; i++) {
+		drawOnePerson(people[i][0], people[i][1]);
+	}
+}
+
 function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	drawBoundary();
+	drawPeople();
 }
 
-window.onresize = function() {
+// window.onresize = function() {
+// 	drawFrame();
+// }
+
+window.setInterval(function() {
 	drawFrame();
-}
-
+}, 500);
 
 $(document).ready(function() {
-	drawFrame();
+	// drawFrame();
 });
