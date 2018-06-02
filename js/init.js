@@ -10,9 +10,13 @@ function init()  {
 	var points = {};
 	var roads = new Array();
 	var graphs = {};
+	var pubs = new Array();
 	
 	nodes = data.node;
 	for (var i = 0; i < nodes.length; ++i) {
+		if ('@public_transport' in nodes[i]) {
+			pubs.push([nodes[i]['@lon'], nodes[i]['@lat'], nodes[i]['@public_transport']]);
+		}
 		points[nodes[i]['@id']] = nodes[i];
 	}
 	ways = data.way;
@@ -35,5 +39,5 @@ function init()  {
 			graphs[nds[j+1]].push(m);
 		}
 	}
-	return [points, roads, graphs];
+	return [points, roads, graphs, pubs];
 }
