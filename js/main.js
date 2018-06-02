@@ -81,7 +81,10 @@ geocoder.on('addresschosen', function(evt) {
 });
 
 pos_arr = simulate();
+// pos_arr = result[1];
+// agent_path = result[0];
 time = 0;
+
 
 $('#map').mouseup(function(e) {
 	isDragging = false;
@@ -163,6 +166,7 @@ function drawLine(x1, y1, x2, y2) {
 	ctx.restore();
 }
 
+
 function drawLine2(y1, x1, y2, x2) {
 	drawLine(x1, y1, x2, y2);
 }
@@ -178,7 +182,7 @@ function drawOnePerson(x, y) {
 	var p = coordRealToCanvas(x, y);
 	x = p[0];
 	y = p[1];
-	var size = 1;
+	var size = 5;
 	ctx.save();
 	ctx.fillStyle = "#f00";
 	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
@@ -195,10 +199,18 @@ function drawPeople() {
 	// for (var i = 0; i < people.length; i++) {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
-	if(time < pos_arr.length)
+	for(var i = 0; i < pos_arr.length; i++)
 	{
-		drawOnePerson(pos_arr[time].x, pos_arr[time].y);
+		if(time < pos_arr[i].length)
+		{
+			drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
+		}
+		// else
+		// {
+			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
+		// }
 	}
+	
 }
 
 function drawOneStation(s) {
@@ -224,9 +236,20 @@ function drawFrame() {
 	// drawBoundary();
 	drawDrag();
 	drawPeople(time);
-	drawStations();
-	time += 1;
+	// drawStations();
 }
+// for(var i = 0; i < agent_path.length-1; i++)
+// {
+// 	var p1 = global_points[agent_path[i]], p2 = global_points[agent_path[i+1]];
+// 	var road_idx = global_graphs[p1['@id']][p2['@id']];
+// 	var road = global_roads[road_idx];
+// 	console.log(road);
+// }
+// for(var i = 0; i < agent_path.length-1; i++)
+// {
+// 	var p1 = global_points[agent_path[i]], p2 = global_points[agent_path[i+1]];
+// 	drawLine(parseFloat(p1['@lon']), parseFloat(p1['@lat']), parseFloat(p2['@lon']), parseFloat(p2['@lat']));
+// }
 
 // window.onresize = function() {
 // 	drawFrame();
@@ -234,7 +257,8 @@ function drawFrame() {
 
 window.setInterval(function() {
 	drawFrame();
-}, 1500);
+	time += 1;
+}, 50);
 
 $(document).ready(function() {
 	// drawFrame();

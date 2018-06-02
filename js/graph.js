@@ -24,6 +24,7 @@ var Graph = (function (undefined) {
 	}
 
 	var findPaths = function (map, start, end, infinity) {
+		this.limit = 80;
 		infinity = infinity || Infinity;
 
 		this.end = end;
@@ -39,12 +40,14 @@ var Graph = (function (undefined) {
 			open[key].push(vertex);
 		}
 
+		var node_bk;
 		costs[start] = 0;
 		/*
 		open[u]距离start为u的地点列表
 		keys放的是
 		*/
 		while (open) {
+
 			if(!(keys = extractKeys(open)).length) break;
 
 			keys.sort(sorter);
@@ -54,7 +57,15 @@ var Graph = (function (undefined) {
 			    node = bucket.shift(),
 			    currentCost = parseFloat(key),
 			    adjacentNodes = map[node] || {};
-			// console.log(node);
+			// console.log('node', node);
+			node_bk = node;
+			this.limit -= 1;
+			if(this.limit<0)
+			{
+				if(this.end == undefined)
+					this.end = node;
+				break;
+			}
 
 			if (!bucket.length) delete open[key];
 			var node_pre = predecessors[node];
@@ -72,7 +83,6 @@ var Graph = (function (undefined) {
 			for (var vertex in adjacentNodes) {
 			    if (Object.prototype.hasOwnProperty.call(adjacentNodes, vertex)) {
 					var road_idx = parseInt(adjacentNodes[vertex]);
-					// console.log(vertex, road_idx);
 					var cost = global_roads[road_idx].dis,
 					    totalCost = cost + currentCost,
 					    vertexCost = costs[vertex];
@@ -88,6 +98,8 @@ var Graph = (function (undefined) {
 				}
 			}
 		}
+		if(this.end == undefined)
+			this.end = node_bk;
 
 		return predecessors;
 
@@ -113,7 +125,7 @@ var Graph = (function (undefined) {
 	}
 
 	var findShortestPath = function (map, nodes) {
-		console.log(nodes);
+		// console.log(nodes);
 		var start = nodes.shift(),
 		    end,
 		    predecessors,
