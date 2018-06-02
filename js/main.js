@@ -1,3 +1,13 @@
+var nb = 40.0093;
+var sb = 39.9854;
+var wb = 116.3485;
+var eb = 116.3953;
+var centerx = (wb + eb) / 2;
+var centery = (nb + sb) / 2;
+
+var WIDTH = 1800;
+var HEIGHT = 1200;
+
 var map = new ol.Map({
 	target: 'map',
 	layers: [
@@ -6,7 +16,7 @@ var map = new ol.Map({
 		})
 	],
 	view: new ol.View({
-		center: ol.proj.fromLonLat([116.32, 40]),
+		center: ol.proj.fromLonLat([centerx, centery]),
 		zoom: 14
 	}),
 	controls: ol.control.defaults({
@@ -15,4 +25,56 @@ var map = new ol.Map({
 		attribution: false
 	}),
 	interactions: []
+});
+
+var ctx = $('#canv')[0].getContext('2d');
+
+
+function coordRealToCanvas(x, y) {
+	// 输入经纬度，返回mask layer的坐标
+	var extent = map.getView().calculateExtent(map.getSize());
+	var box = ol.proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
+	var w = box[2] - box[0];
+	var h = box[3] - box[1];
+	var x_ = (x - box[0]) / w * WIDTH;
+	var y_ = HEIGHT - (y - box[1]) / h * HEIGHT;
+	return [Math.round(x_), Math.round(y_)];
+}
+
+function drawLine(x1, y1, x2, y2) {
+	var p1 = coordRealToCanvas(x1, y1);
+	var p2 = coordRealToCanvas(x2, y2);
+	ctx.save();
+	ctx.lineWidth = 5;
+	ctx.beginPath();
+	ctx.moveTo(p1[0], p1[1]);
+	ctx.lineTo(p2[0], p2[1]);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.restore();
+}
+
+function drawLine2(y1, x1, y2, x2) {
+	drawLine(x1, y1, x2, y2);
+}
+
+function drawBoundary() {
+	drawLine(eb, nb, wb, nb);
+	drawLine(eb, sb, wb, sb);
+	drawLine(eb, nb, eb, sb);
+	drawLine(wb, nb, wb, sb);
+}
+
+function drawFrame() {
+	ctx.clearRect(0, 0, WIDTH, HEIGHT);
+	drawBoundary();
+}
+
+window.onresize = function() {
+	drawFrame();
+}
+
+
+$(document).ready(function() {
+	drawFrame();
 });
