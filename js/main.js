@@ -12,7 +12,7 @@ var isDragging = false;
 var dragStart = [];
 var dragEnd = [];
 
-var data = init();
+// var data = init();
 
 var map = new ol.Map({
 	target: 'map',
@@ -80,6 +80,8 @@ geocoder.on('addresschosen', function(evt) {
 	overlay.setPosition(coord);
 });
 
+pos_arr = simulate();
+time = 0;
 
 $('#map').mouseup(function(e) {
 	isDragging = false;
@@ -174,13 +176,17 @@ function drawOnePerson(x, y) {
 
 function drawPeople() {
 	// draw random people
-	var people = [];
-	for (var i = 0; i < 10000; i++) {
-		people.push([random(wb, eb), random(sb, nb)]);
-	}
+	// var people = [];
+	// for (var i = 0; i < 10000; i++) {
+	// 	people.push([random(wb, eb), random(sb, nb)]);
+	// }
 
-	for (var i = 0; i < people.length; i++) {
-		drawOnePerson(people[i][0], people[i][1]);
+	// for (var i = 0; i < people.length; i++) {
+	// 	drawOnePerson(people[i][0], people[i][1]);
+	// }
+	if(time < pos_arr.length)
+	{
+		drawOnePerson(pos_arr[time].x, pos_arr[time].y);
 	}
 }
 
@@ -197,8 +203,8 @@ function drawOneStation(s) {
 }
 
 function drawStations() {
-	for (var i = 0; i < data[3].length; i++) {
-		drawOneStation(data[3][i]);
+	for (var i = 0; i < global_pubs.length; i++) {
+		drawOneStation(global_pubs[i]);
 	}
 }
 
@@ -206,17 +212,18 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	// drawPeople();
+	drawPeople(time);
 	drawStations();
+	time += 1;
 }
 
 // window.onresize = function() {
 // 	drawFrame();
 // }
 
-// window.setInterval(function() {
-// 	drawFrame();
-// }, 1500);
+window.setInterval(function() {
+	drawFrame();
+}, 1500);
 
 $(document).ready(function() {
 	// drawFrame();

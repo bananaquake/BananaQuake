@@ -54,13 +54,14 @@ var Graph = (function (undefined) {
 			    node = bucket.shift(),
 			    currentCost = parseFloat(key),
 			    adjacentNodes = map[node] || {};
+			// console.log(node);
 
 			if (!bucket.length) delete open[key];
 			var node_pre = predecessors[node];
 			if(node_pre!=undefined)
 			{
 				var road_idx = global_graphs[node_pre][node];
-				if(global_roads[road_idx].exit)
+				if(global_roads[road_idx].shelter==1)
 				{
 					if(this.end == undefined)
 						this.end = node;
@@ -87,7 +88,6 @@ var Graph = (function (undefined) {
 				}
 			}
 		}
-		console.log(costs);
 
 		return predecessors;
 
