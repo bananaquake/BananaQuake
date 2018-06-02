@@ -8,7 +8,7 @@
 	<title></title>
 	<!--Import materialize.css-->
 	<link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
-    <link href="https://cdn.jsdelivr.net/npm/ol-geocoder@latest/dist/ol-geocoder.min.css" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/ol-geocoder@latest/dist/ol-geocoder.min.css" rel="stylesheet">
 	<link type="text/css" rel="stylesheet" href="css/common.css" media="screen,projection" />
 
 	<!--Let browser know website is optimized for mobile-->
@@ -19,28 +19,31 @@
 	<nav class="white">
 		<div class="nav-wrapper container">
 			<a href="#" class="brand-logo black-text">Bananalytics 🍌</a>
-			<ul id="nav-mobile" class="right hide-on-med-and-down">
+			<!-- <ul id="nav-mobile" class="right hide-on-med-and-down">
 				<li><a class="black-text" href="sass.html">Sass</a></li>
 				<li><a class="black-text" href="badges.html">Components</a></li>
 				<li><a class="black-text" href="collapsible.html">JavaScript</a></li>
-			</ul>
+			</ul> -->
 		</div>
 	</nav>
 
 	<main>
-        <div class="row">
-            <div class="col s9">
-                <div id="map-container" class="section">
-        			<div id="map" class="map"></div>
-        			<div id="mask-layer">
-        				<canvas id="canv" width="1800px" height="1200px"></canvas>
-        			</div>
-        		</div>
-            </div>
-            <div id="right-panel" class="col s3">
-
-            </div>
-        </div>
+		<div class="row">
+			<div class="col s9">
+				<div id="map-container" class="section">
+					<div id="map" class="map"></div>
+					<div id="mask-layer">
+						<canvas id="canv" width="1800px" height="1200px"></canvas>
+					</div>
+				</div>
+			</div>
+			<div id="right-panel" class="col s3">
+				<a class="waves-effect waves-light btn" onclick="getBuildingsInView(); listBuildingsInView();">
+					<i class="material-icons left">home</i>Find Buildings
+				</a>
+				<div id="buildings-container" class=""></div>
+			</div>
+		</div>
 	</main>
 
 	<footer class="page-footer grey lighten-3">
@@ -57,9 +60,10 @@
 	<script src="https://openlayers.org/en/v4.6.5/build/ol.js" type="text/javascript"></script>
 	<script src="https://cdn.jsdelivr.net/npm/ol-geocoder"></script>
 	<!-- <script src="//cdnjs.cloudflare.com/ajax/libs/horsey/4.2.2/horsey.min.js"></script> -->
+	<script type="text/javascript" src="js/file/buildings.js"></script>
 	<script type="text/javascript" src="js/file/out_small.js"></script>
-    <script type="text/javascript" src="js/init.js"></script>
-    <script type="text/javascript" src="js/main.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
+	<script type="text/javascript" src="js/main.js"></script>
 
 	<script type="text/javascript">
 	</script>
