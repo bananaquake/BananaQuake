@@ -82,11 +82,8 @@ map.addControl(geocoder);
 // 	// overlay.setPosition(coord);
 // });
 
-var start = new Date().getTime();
-pos_arr = simulate();
-var end = new Date().getTime(); // 结束时间
-
-console.log('time:', end - start);
+// init();
+// pos_arr = simulate2points(centerx, centery, parseFloat(global_pubs[0][0]), parseFloat(global_pubs[0][1]));
 
 // pos_arr = result[1];
 // agent_path = result[0];
@@ -236,15 +233,22 @@ function drawPeople() {
 	// for (var i = 0; i < people.length; i++) {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
-	for (var i = 0; i < pos_arr.length; i++) {
-		if (time < pos_arr[i].length) {
-			drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
-		}
-		// else
-		// {
-		// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
-		// }
+
+	if(time < pos_arr.length)
+	{
+		drawOnePerson(pos_arr[time].x, pos_arr[time].y);
 	}
+	// for(var i = 0; i < pos_arr.length; i++)
+	// {
+	// 	if(time < pos_arr[i].length)
+	// 	{
+	// 		drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
+	// 	}
+	// else
+	// {
+	// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
+	// }
+	// }
 
 }
 
@@ -272,7 +276,7 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	// drawPeople(time);
+	drawPeople(time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)

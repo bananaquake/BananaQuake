@@ -69,8 +69,7 @@ var Graph = (function (undefined) {
 			this.limit -= 1;
 			if(this.limit<0)
 			{
-				if(this.end == undefined)
-					this.end = node;
+				this.end = node;
 				break;
 			}
 
@@ -105,7 +104,7 @@ var Graph = (function (undefined) {
 				}
 			}
 		}
-		if(this.end == undefined)
+		if(this.end == undefined||predecessors[this.end] == undefined)
 			this.end = node_bk;
 
 		return predecessors;

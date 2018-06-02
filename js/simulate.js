@@ -16,8 +16,9 @@ function find_s(x, y)
 	}
 	return minid;
 }
-function simulate(x1, y1, x2, y2)//log, lat
+function simulate2points(x1, y1, x2, y2)//log, lat
 {
+	console.log(x1, y1, x2, y2);
 	var idx = find_s(x1, y1);
 	if(idx=='-1')
 	{
@@ -30,8 +31,10 @@ function simulate(x1, y1, x2, y2)//log, lat
 		console.log('holly shit target!', x1, y1);
 		return ;
 	}
+	console.log(idx, target);
+	var graph = new Graph(global_graphs, global_roads);
 	var path = graph.findShortestPath(idx, target);
-	// console.log(path.length);
+	console.log(path);
 	if(path.length==0)
 	{
 		console.log('No result!', x1, y1);
@@ -40,7 +43,7 @@ function simulate(x1, y1, x2, y2)//log, lat
 
 	var point = makeStruct("x y");
 	var pos_arr = new Array();
-	pos_arr[0] = new point(lon, lat);
+	pos_arr[0] = new point(x1, y1);
 	var idx = 1, pos_idx = 1;
 	var tmp_point = global_points[path[0]], nxt_point = global_points[path[idx]];
 	// console.log(tmp_point);
@@ -71,6 +74,7 @@ function simulate(x1, y1, x2, y2)//log, lat
 		}
 	}
 	pos_arr[pos_idx] = new point(parseFloat(tmp_point['@lon']), parseFloat(tmp_point['@lat']));
+	pos_arr[pos_idx+1] = new point(parseFloat(x2), parseFloat(y2));
 	// console.log(pos_arr);
 	var eps = 0.000001;
 	for(var i = 0; i < pos_arr.length; i++)
