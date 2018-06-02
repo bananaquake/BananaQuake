@@ -26,7 +26,8 @@ function calRatio(points) {
 function calHeat(points) {
 	var data = new ol.source.Vector();   
 	for (var i = 0; i < points.length; ++i) {
-		var lonLat = new ol.geom.Point(points[i][1],points[i][0]);
+		var lonLat = new ol.geom.Point(ol.proj.transform([points[i][1],points[i][0]],'EPSG:4326', 'EPSG:3857'));
+
 		var pointFeature = new ol.Feature({
 			geometry: lonLat,
 			weight: points[i][2]
