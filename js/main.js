@@ -82,7 +82,7 @@ map.addControl(geocoder);
 // 	// overlay.setPosition(coord);
 // });
 
-pos_arr = simulate();
+/////////// pos_arr = simulate();
 // pos_arr = result[1];
 // agent_path = result[0];
 time = 0;
@@ -240,7 +240,7 @@ function drawPeople() {
 			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
 		// }
 	}
-	
+
 }
 
 function drawOneStation(s) {
@@ -265,7 +265,7 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	drawPeople(time);
+	// drawPeople(time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -325,6 +325,7 @@ function listBuildingsInView() {
 		}
 		if (count > 5) break;
 	}
+	console.log(buildings_in_view);
 }
 
 $(document).ready(function() {
