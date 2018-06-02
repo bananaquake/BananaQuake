@@ -310,11 +310,13 @@ function getBuildingsInView() {
 		// for (var j = 0; j < polys.length; j++) {
 		var j = 0;
 		if (polys[j].length && inView(polys[j][0])) {
+			var area = getPolyArea(polys[j]);
 			var building = {
 				poly: polys[j],
 				id: buildings[i].id + "@" + j,
 				name: buildings[i].properties.name,
-				area: getPolyArea(polys[j])
+				area: area,
+				people: calNum(area)
 			};
 			buildings_in_view.push(building);
 		}
