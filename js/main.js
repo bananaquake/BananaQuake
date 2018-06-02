@@ -80,7 +80,11 @@ geocoder.on('addresschosen', function(evt) {
 	overlay.setPosition(coord);
 });
 
+var start = new Date().getTime();
 pos_arr = simulate();
+var end = new Date().getTime(); // 结束时间
+
+console.log('time:', end - start);
 // pos_arr = result[1];
 // agent_path = result[0];
 time = 0;
@@ -214,6 +218,8 @@ function drawPeople() {
 }
 
 function drawOneStation(s) {
+	s[0] = parseFloat(s[0]);
+	s[1] = parseFloat(s[1]);
 	if (!(s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb)) return;
 	var p = coordRealToCanvas(s[0], s[1]);
 	var x = p[0];
