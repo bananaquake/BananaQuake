@@ -100,6 +100,8 @@ $('#map').mouseup(function(e) {
 	dragEnd = [];
 });
 
+$('#buildings-container').hide();
+
 function random(a, b) {
 	var r = Math.random();
 	r *= (b - a);
@@ -234,15 +236,13 @@ function drawPeople() {
 	// for (var i = 0; i < people.length; i++) {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
-	for(var i = 0; i < pos_arr.length; i++)
-	{
-		if(time < pos_arr[i].length)
-		{
+	for (var i = 0; i < pos_arr.length; i++) {
+		if (time < pos_arr[i].length) {
 			drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
 		}
 		// else
 		// {
-			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
+		// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
 		// }
 	}
 
@@ -325,13 +325,19 @@ function getBuildingsInView() {
 function listBuildingsInView() {
 	$('#buildings-container').html('');
 	var count = 0;
+	$('#buildings-container').show();
 	for (var i = 0; i < buildings_in_view.length; i++) {
 		if (buildings_in_view[i].name) {
 			count++;
-			$('#buildings-container').append('<div>' + buildings_in_view[i].name + '</div>');
+			var html = '<li class="collection-item">' +
+				buildings_in_view[i].name +
+				': ' + buildings_in_view[i].people
+				'</li>';
+			$('#buildings-container').append(html);
 		}
-		if (count > 5) break;
+		// if (count > 5) break;
 	}
+	if (!count) $('#buildings-container').hide();
 	console.log(buildings_in_view);
 }
 

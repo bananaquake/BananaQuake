@@ -112,3 +112,12 @@ footer.page-footer {
 .row {
 	margin-bottom: 0;
 }
+
+#find-button {
+	margin-bottom: 1rem;
+}
+
+.collection {
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
