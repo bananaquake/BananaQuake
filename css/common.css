@@ -47,9 +47,27 @@ footer {
 }
 
 .map {
-    height: 600px;
+    height: 100%;
     width: 100%;
+    position: relative;
+    top: 0;
+    left: 0;
 }
 #canv {
     width: 100%;
+}
+#mask-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+#map-container {
+    position: relative;
+    padding: 0;
+    width: 90vw;
+    height: 60vw;
+    margin: 1rem auto;
+}
+.container {
+    width: 90vw;
 }
