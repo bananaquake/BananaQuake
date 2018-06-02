@@ -95,6 +95,17 @@ function random(a, b) {
 	return r;
 }
 
+function getLength(x1, y1, x2, y2) {
+	var points = [
+		ol.proj.transform([x1, y1], 'EPSG:4326', 'EPSG:3857'),
+		ol.proj.transform([x2, y2], 'EPSG:4326', 'EPSG:3857')
+	];
+	var featureLine = new ol.Feature({
+		geometry: new ol.geom.LineString(points)
+	});
+	return featureLine.getGeometry().getLength();
+}
+
 function updateBoundary() {
 	var extent = map.getView().calculateExtent(map.getSize());
 	var box = ol.proj.transformExtent(extent, 'EPSG:3857', 'EPSG:4326');
