@@ -82,7 +82,12 @@ map.addControl(geocoder);
 // 	// overlay.setPosition(coord);
 // });
 
-/////////// pos_arr = simulate();
+var start = new Date().getTime();
+pos_arr = simulate();
+var end = new Date().getTime(); // 结束时间
+
+console.log('time:', end - start);
+
 // pos_arr = result[1];
 // agent_path = result[0];
 time = 0;
@@ -94,6 +99,8 @@ $('#map').mouseup(function(e) {
 	dragStart = [];
 	dragEnd = [];
 });
+
+$('#buildings-container').hide();
 
 function random(a, b) {
 	var r = Math.random();
@@ -229,21 +236,21 @@ function drawPeople() {
 	// for (var i = 0; i < people.length; i++) {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
-	for(var i = 0; i < pos_arr.length; i++)
-	{
-		if(time < pos_arr[i].length)
-		{
+	for (var i = 0; i < pos_arr.length; i++) {
+		if (time < pos_arr[i].length) {
 			drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
 		}
 		// else
 		// {
-			// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
+		// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
 		// }
 	}
 
 }
 
 function drawOneStation(s) {
+	s[0] = parseFloat(s[0]);
+	s[1] = parseFloat(s[1]);
 	if (!(s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb)) return;
 	var p = coordRealToCanvas(s[0], s[1]);
 	var x = p[0];
@@ -318,13 +325,19 @@ function getBuildingsInView() {
 function listBuildingsInView() {
 	$('#buildings-container').html('');
 	var count = 0;
+	$('#buildings-container').show();
 	for (var i = 0; i < buildings_in_view.length; i++) {
 		if (buildings_in_view[i].name) {
 			count++;
-			$('#buildings-container').append('<div>' + buildings_in_view[i].name + '</div>');
+			var html = '<li class="collection-item">' +
+				buildings_in_view[i].name +
+				': ' + buildings_in_view[i].people
+				'</li>';
+			$('#buildings-container').append(html);
 		}
-		if (count > 5) break;
+		// if (count > 5) break;
 	}
+	if (!count) $('#buildings-container').hide();
 	console.log(buildings_in_view);
 }
 

@@ -48,19 +48,12 @@ var Graph = (function (undefined) {
 		*/
 		while (open) {
 
-			// if(!(keys = extractKeys(open)).length) break;
-			// keys.sort(sorter);
-			// var key = keys[0];
+			if(!(keys = extractKeys(open)).length) break;
 
-			var key = 10000000000;
-			for(var tmp in open)
-			{
-				key = parseFloat(tmp);
-				break;
-			}
-			// console.log('key', key);
-			if(key > 1000000000)break;
-			var bucket = open[key],
+			keys.sort(sorter);
+			// console.log(keys);
+			var key = keys[0],
+			    bucket = open[key],
 			    node = bucket.shift(),
 			    currentCost = parseFloat(key),
 			    adjacentNodes = map[node] || {};
