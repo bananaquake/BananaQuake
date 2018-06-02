@@ -8,19 +8,12 @@ function road(u, v, dis, width, shelter, broken = false)  {
 }
 
 function init()  {
-<<<<<<< HEAD
+
 	global_points = {};
 	global_roads = new Array();
 	global_graphs = {};
 	global_pubs = new Array();
-	
-=======
-	var points = {};
-	var roads = new Array();
-	var graphs = {};
-	var pubs = new Array();
 
->>>>>>> 9d1715d082cefa84d632d44deecd6c9042d518ea
 	nodes = data.node;
 	for (var i = 0; i < nodes.length; ++i) {
 		if ('@public_transport' in nodes[i]) {
