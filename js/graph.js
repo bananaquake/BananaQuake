@@ -26,6 +26,8 @@ var Graph = (function (undefined) {
 	var findPaths = function (map, start, end, infinity) {
 		infinity = infinity || Infinity;
 
+		this.end = end;
+
 		var costs = {},
 		    open = {'0': [start]},
 		    predecessors = {},
@@ -38,12 +40,15 @@ var Graph = (function (undefined) {
 		}
 
 		costs[start] = 0;
-
+		/*
+		open[u]距离start为u的地点列表
+		keys放的是
+		*/
 		while (open) {
 			if(!(keys = extractKeys(open)).length) break;
 
 			keys.sort(sorter);
-
+			// console.log(keys);
 			var key = keys[0],
 			    bucket = open[key],
 			    node = bucket.shift(),
@@ -51,13 +56,27 @@ var Graph = (function (undefined) {
 			    adjacentNodes = map[node] || {};
 
 			if (!bucket.length) delete open[key];
+			var node_pre = predecessors[node];
+			if(node_pre!=undefined)
+			{
+				var road_idx = global_graphs[node_pre][node];
+				if(global_roads[road_idx].exit)
+				{
+					if(this.end == undefined)
+						this.end = node;
+					break;
+				}
+			}
 
 			for (var vertex in adjacentNodes) {
 			    if (Object.prototype.hasOwnProperty.call(adjacentNodes, vertex)) {
-					var road_idx = adjacentNodes[vertex],
-					    cost = this.road_arr[road_idx].distance;
+					var road_idx = parseInt(adjacentNodes[vertex]);
+					// console.log(vertex, road_idx);
+					var cost = global_roads[road_idx].dis,
 					    totalCost = cost + currentCost,
 					    vertexCost = costs[vertex];
+					if(global_roads[road_idx].broken)
+						continue;
 					// console.log(node, vertex, road_idx, cost);
 
 					if ((vertexCost === undefined) || (vertexCost > totalCost)) {
@@ -70,11 +89,13 @@ var Graph = (function (undefined) {
 		}
 		console.log(costs);
 
-		if (costs[end] === undefined) {
-			return null;
-		} else {
-			return predecessors;
-		}
+		return predecessors;
+
+		// if (costs[end] === undefined) {
+		// 	return null;
+		// } else {
+		// 	return predecessors;
+		// }
 
 	}
 
@@ -92,18 +113,20 @@ var Graph = (function (undefined) {
 	}
 
 	var findShortestPath = function (map, nodes) {
+		console.log(nodes);
 		var start = nodes.shift(),
 		    end,
 		    predecessors,
 		    path = [],
 		    shortest;
 
-		while (nodes.length) {
+		// while (nodes.length) {
+		while (true) {
 			end = nodes.shift();
 			predecessors = findPaths(map, start, end);
 
 			if (predecessors) {
-				shortest = extractShortest(predecessors, end);
+				shortest = extractShortest(predecessors, this.end);
 				if (nodes.length) {
 					path.push.apply(path, shortest.slice(0, -1));
 				} else {
@@ -114,6 +137,7 @@ var Graph = (function (undefined) {
 			}
 
 			start = end;
+			break;
 		}
 	}
 
@@ -131,9 +155,6 @@ var Graph = (function (undefined) {
 
 	var Graph = function (map, road_arr) {
 		this.map = map;
-		this.road_arr = road_arr;
-		// console.log(this.map);
-		// console.log(this.road_arr);
 	}
 
 	Graph.prototype.findShortestPath = function (start, end) {
