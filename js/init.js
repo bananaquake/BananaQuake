@@ -11,7 +11,7 @@ function init()  {
 	var roads = new Array();
 	var graphs = {};
 	var pubs = new Array();
-	
+
 	nodes = data.node;
 	for (var i = 0; i < nodes.length; ++i) {
 		if ('@public_transport' in nodes[i]) {
@@ -27,7 +27,7 @@ function init()  {
 			roads.push(new road(nds[j], nds[j+1], dis, ways[i]['@width'], ways[i]['@shelter']));
 			if (!graphs.hasOwnProperty(nds[j])) {
 				graphs[nds[j]] = new Array();
-			} 
+			}
 			m = {};
 			m[nds[j+1]] = roads.length-1;
 			graphs[nds[j]].push(m);
