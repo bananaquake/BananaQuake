@@ -82,6 +82,17 @@ footer {
 	margin: 1rem 0;
 }
 
+#buildings-container {
+	height: calc(50vw - 1rem - 4.375em - 2rem - 36px);
+	overflow-y: scroll;
+	margin-top: 0;
+	margin-bottom: 1rem;
+}
+
+#find-button {
+	margin-bottom: 1rem;
+}
+
 .container {
 	width: 100vw;
 	padding: 0 0.75rem;

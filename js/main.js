@@ -15,6 +15,7 @@ var dragEnd = [];
 // var data = init();
 
 var buildings_in_view = [];
+var global_buildings = {};
 
 var map = new ol.Map({
 	target: 'map',
@@ -309,6 +310,7 @@ function inView(s) {
 
 function getBuildingsInView() {
 	buildings_in_view = [];
+	global_buildings = {};
 	for (var i = 0; i < buildings.length; i++) {
 		var polys = buildings[i].geometry.coordinates;
 		// for (var j = 0; j < polys.length; j++) {
@@ -323,6 +325,7 @@ function getBuildingsInView() {
 				people: calNum(area)
 			};
 			buildings_in_view.push(building);
+			global_buildings[building.name] = building.people;
 		}
 		// }
 	}
