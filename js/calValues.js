@@ -52,7 +52,9 @@ function calHeat(points) {
 	}
 	heatMapLayer = new ol.layer.Heatmap({
 		source: data,
-		radius: 7
+		radius: 8,
+		opacity: 0.8,
+		blur: 10
 	});
 	map.addLayer(heatMapLayer);
 }

@@ -83,7 +83,7 @@ footer {
 }
 
 #buildings-container {
-	height: calc(50vw - 1rem - 4.375em - 2rem - 36px);
+	max-height: calc(50vw - 1rem - 4.375em - 2rem - 36px);
 	overflow-y: scroll;
 	margin-top: 0;
 	margin-bottom: 1rem;

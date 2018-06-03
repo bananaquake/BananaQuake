@@ -30,7 +30,7 @@ var map = new ol.Map({
 	],
 	view: new ol.View({
 		center: ol.proj.fromLonLat([centerx, centery]),
-		zoom: 10
+		zoom: 11
 	}),
 	controls: ol.control.defaults({
 		// zoom: false,
@@ -234,9 +234,9 @@ function drawOnePerson(x, y) {
 	var p = coordRealToCanvas(x, y);
 	x = p[0];
 	y = p[1];
-	var size = 5;
+	var size = 8;
 	ctx.save();
-	ctx.fillStyle = "#f00";
+	ctx.fillStyle = "rgba(255, 167, 39, 1)";
 	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
 	ctx.restore();
 }
@@ -355,6 +355,7 @@ function getBuildingsInView() {
 				people: calNum(area),
 				center: center
 			};
+			if (building.name == undefined) continue;
 			buildings_in_view.push(building);
 			global_buildings[building.id] = building.people;
 		}
@@ -425,14 +426,17 @@ function startSimulation()
 		var pair = coorpair[i];
 		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
 		if(path.length<3)continue;
+		var p1 = global_points[path[0]], p2 = global_points[path[path.length-1]];
+		var total_dist = getLength(pair[2], pair[3], parseFloat(p2['@lon']), parseFloat(p2['@lat']));
+		if(total_dist>1500)continue;
 		all_path.push(path);
 		all_number.push(global_ratio[i][2]);
 		// var pos_arr = simulate2points(pair[0], pair[1], pair[2], pair[3]);
 		// all_agent.push(pos_arr);
-		for(var j = 0; j < global_ratio[i][2]; j++)
+		for(var j = 0; j < Math.max(global_ratio[i][2], 100); j++)
 		{
 			var pos_arr = sample(path);
-			var step = Math.round(random(1, 1000));
+			var step = Math.round(random(1, 500));
 			var nxt_pos_arr = new Array();
 			for(var k = 0; k < step; k++)
 			{
@@ -450,6 +454,7 @@ function startSimulation()
 	global_flag = true;
 	time = 0;
 	draw_heatmap();
+	restoreState();
 }
 
 function listBuildingsInView() {
@@ -477,7 +482,7 @@ function listBuildingsInView() {
 	if (!count) $('#buildings-container').hide();
 	$('#start-button').show();
 	$('#find-button').hide();
-	need_draw_stations = true;
+	need_draw_stations = false;
 	console.log(buildings_in_view);
 }
 
