@@ -1,9 +1,9 @@
-var nb = 40.0093;
-var sb = 39.9854;
-var wb = 116.3485;
-var eb = 116.3953;
-var centerx = (wb + eb) / 2;
-var centery = (nb + sb) / 2;
+var nb;// = 40.0093;
+var sb;// = 39.9854;
+var wb;// = 116.3485;
+var eb;// = 116.3953;
+var centerx = 116.3907817;//(wb + eb) / 2;
+var centery = 39.9174311;//(nb + sb) / 2;
 
 var WIDTH = 1800;
 var HEIGHT = 1200;
@@ -16,6 +16,9 @@ var dragEnd = [];
 
 var buildings_in_view = [];
 var global_buildings = {};
+var global_tooltip = null;
+
+var need_draw_stations = false;
 
 var map = new ol.Map({
 	target: 'map',
@@ -26,7 +29,7 @@ var map = new ol.Map({
 	],
 	view: new ol.View({
 		center: ol.proj.fromLonLat([centerx, centery]),
-		zoom: 14
+		zoom: 10
 	}),
 	controls: ol.control.defaults({
 		// zoom: false,
@@ -135,6 +138,17 @@ function getPolyArea(poly) {
 	return geometry.getArea();
 }
 
+function getPolyCenter(poly) {
+	var center = [0, 0];
+	for (var i = 0; i < poly.length; i++) {
+		center[0] += poly[i][0];
+		center[1] += poly[i][1];
+	}
+	center[0] /= poly.length;
+	center[1] /= poly.length;
+	return center;
+}
+
 function findNearStations(x, y) {
 	var result = [];
 	for (var i = 0; i < global_pubs.length; i++) {
@@ -235,8 +249,7 @@ function drawPeople() {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
 
-	if(time < pos_arr.length)
-	{
+	if (time < pos_arr.length) {
 		drawOnePerson(pos_arr[time].x, pos_arr[time].y);
 	}
 	// for(var i = 0; i < pos_arr.length; i++)
@@ -277,8 +290,11 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	drawPeople( time);
-	// drawStations();
+	drawPeople(time);
+	if (need_draw_stations) {
+		drawStations();
+	}
+	drawTooltip();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
 // {
@@ -287,9 +303,9 @@ function drawFrame() {
 // 	var road = global_roads[road_idx];
 // 	console.log(road);
 // }
-for(var i = 0; i < pos_arr.length-1; i++)
-{
-	var p1 = pos_arr[i], p2 = pos_arr[i+1];
+for (var i = 0; i < pos_arr.length - 1; i++) {
+	var p1 = pos_arr[i],
+		p2 = pos_arr[i + 1];
 	drawLine(p1.x, p1.y, p2.x, p2.y);
 }
 
@@ -317,12 +333,14 @@ function getBuildingsInView() {
 		var j = 0;
 		if (polys[j].length && inView(polys[j][0])) {
 			var area = getPolyArea(polys[j]);
+			var center = getPolyCenter(polys[j]);
 			var building = {
 				poly: polys[j],
 				id: buildings[i].id + "@" + j,
 				name: buildings[i].properties.name,
 				area: area,
-				people: calNum(area)
+				people: calNum(area),
+				center: center
 			};
 			buildings_in_view.push(building);
 			global_buildings[building.id] = building.people;
@@ -331,10 +349,8 @@ function getBuildingsInView() {
 	}
 }
 
-function startSimulation()
-{
-	for(var i = 0; i < buildings_in_view.length; i++)
-	{
+function startSimulation() {
+	for (var i = 0; i < buildings_in_view.length; i++) {
 		var pos = buildings_in_view[i].poly[0];
 		var stations = findNearStations(parseFloat(pos[0]), parseFloat(pos[1]));
 		console.log(pos, stations);
@@ -348,16 +364,48 @@ function listBuildingsInView() {
 	for (var i = 0; i < buildings_in_view.length; i++) {
 		if (buildings_in_view[i].name) {
 			count++;
-			var html = '<li class="collection-item">' +
+			var tooltip = JSON.stringify(buildings_in_view[i]);
+			var html = '<a class="collection-item" ' +
+				'onmouseover=\'showTooltip(' +
+				tooltip +
+				');\'' +
+				'>' +
 				buildings_in_view[i].name +
-				': ' + buildings_in_view[i].people
-				'</li>';
+				'</a>';
 			$('#buildings-container').append(html);
 		}
 		// if (count > 5) break;
 	}
 	if (!count) $('#buildings-container').hide();
+	$('#start-button').show();
+	$('#find-button').hide();
+	need_draw_stations = true;
 	console.log(buildings_in_view);
+}
+
+function drawTooltip() {
+	if (global_tooltip == null) return;
+	var t = global_tooltip;
+	var c = coordRealToCanvas(t.center[0], t.center[1]);
+	// console.log(t.center);
+	ctx.save();
+	ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+	ctx.fillRect(c[0] - 12, c[1] + 12, t.name.length * 24 + 24, -24 - 24);
+	ctx.fillStyle = "#444";
+	ctx.font = "bold 24px Arial";
+	ctx.fillText(t.name, c[0], c[1]);
+	ctx.restore();
+}
+
+function showTooltip(tooltip) {
+	// console.log(tooltip);
+	var pos = tooltip.center;
+	if (!inView(pos)) {
+		global_tooltip = null;
+		return;
+	}
+	global_tooltip = tooltip;
+	drawTooltip();
 }
 
 $(document).ready(function() {
