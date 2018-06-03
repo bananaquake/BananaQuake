@@ -421,7 +421,7 @@ function startSimulation()
 	{
 		if(i%10==0)
 			console.log(i);
-		if(i>500)break;
+		if(i>1000)break;
 		var pair = coorpair[i];
 		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
 		if(path.length<3)continue;
