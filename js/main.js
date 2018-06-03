@@ -325,7 +325,7 @@ function getBuildingsInView() {
 				people: calNum(area)
 			};
 			buildings_in_view.push(building);
-			global_buildings[building.name] = building.people;
+			global_buildings[building.id] = building.people;
 		}
 		// }
 	}
