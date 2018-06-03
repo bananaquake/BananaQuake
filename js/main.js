@@ -495,6 +495,14 @@ function showTooltip(tooltip) {
 	drawTooltip();
 }
 
+function restoreState() {
+	$('#start-button').hide();
+	$('#find-button').show();
+	need_draw_stations = false;
+	$('#buildings-container').html('');
+	$('#buildings-container').hide();
+}
+
 $(document).ready(function() {
 	// drawFrame();
 	$('#right-panel').prepend($('#gcd-container'));
