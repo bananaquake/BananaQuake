@@ -18,7 +18,7 @@ function calRatio(points) {
 		sum_houses[points[i][0]] += points[i][2];
 	}
 	for (var i = 0; i < points.length; ++i) {
-		global_ratio.push([points[i][0], points[i][1], (sum_houses[points[i][0]] - points[i][2]) / sum_houses[points[i][0]]]);
+		global_ratio.push( Math.round([points[i][0], points[i][1], (sum_houses[points[i][0]] - points[i][2])*global_buildings[points[i][0]] / sum_houses[points[i][0]]]));
 	}
 }
 
