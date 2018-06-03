@@ -25,14 +25,17 @@ function calRatio(points) {
 	}
 }
 
-//points: [[lat, lon, weight],[...]]
+//points: [[[lat, lon],[lat, lon], weight],[...]]
 function calHeat(points) {
 	var data = new ol.source.Vector();
 	for (var i = 0; i < points.length; ++i) {
-		var lonLat = new ol.geom.Point(ol.proj.transform([points[i][1], points[i][0]], 'EPSG:4326', 'EPSG:3857'));
-
+		var points = [
+			ol.proj.transform([points[i][0][0], points[i][0][1]], 'EPSG:4326', 'EPSG:3857'),
+			ol.proj.transform([points[i][1][0], points[i][1][1]], 'EPSG:4326', 'EPSG:3857')
+		]
+		
 		var pointFeature = new ol.Feature({
-			geometry: lonLat,
+			geometry: new ol.geom.LineString(points),
 			weight: points[i][2]
 		});
 

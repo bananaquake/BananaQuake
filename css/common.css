@@ -93,6 +93,10 @@ footer {
 	margin-bottom: 1rem;
 }
 
+#start-button {
+	margin-bottom: 1rem;
+}
+
 .container {
 	width: 100vw;
 	padding: 0 0.75rem;
@@ -100,26 +104,30 @@ footer {
 
 .ol-geocoder.gcd-txt-container {
 	position: initial;
-    width: initial;
-    height: initial;
+	width: initial;
+	height: initial;
 	margin-bottom: 1rem;
 }
 
 .gcd-txt-result {
-    position: initial!important;
-    width: initial!important;
+	position: initial !important;
+	width: initial !important;
 }
 
 #right-panel {
-    margin-top: 1rem;
-    margin-bottom: 1rem;
+	margin-top: 1rem;
+	margin-bottom: 1rem;
 }
 
 footer.page-footer {
-    margin-top: 0px;
-    padding-top: 0px;
+	margin-top: 0px;
+	padding-top: 0px;
 }
 
 .row {
 	margin-bottom: 0;
+}
+
+.collection-item {
+	color: black!important;
 }
