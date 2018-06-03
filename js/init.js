@@ -17,7 +17,7 @@ function init()  {
 	nodes = data.node;
 	for (var i = 0; i < nodes.length; ++i) {
 		if ('@public_transport' in nodes[i]) {
-			global_pubs.push([nodes[i]['@lon'], nodes[i]['@lat'], nodes[i]['@public_transport']]);
+			global_pubs.push([nodes[i]['@lon'], nodes[i]['@lat'], nodes[i]['@public_transport'], nodes[i]['@id']]);
 		}
 		global_points[nodes[i]['@id']] = nodes[i];
 	}

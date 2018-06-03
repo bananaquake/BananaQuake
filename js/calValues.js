@@ -1,6 +1,6 @@
 //area: {houseID: house_area, houseID2: house_area2}
 function calNum(area) {
-	return Math.round(Math.pow(area, 2) / 15);
+	return Math.round(6*area / 15);
 	// global_nums = {};
 	// for (var key in area) {
 	// 	global_nums[key] = Math.pow(area[key], 2) / 15;
@@ -9,6 +9,7 @@ function calNum(area) {
 
 //points: [[houseID, pubsID, dist],[...]]
 function calRatio(points) {
+
 	global_ratio = new Array();
 	var sum_houses = {}
 	for (var i = 0; i < points.length; ++i) {
@@ -17,8 +18,10 @@ function calRatio(points) {
 		}
 		sum_houses[points[i][0]] += points[i][2];
 	}
+	console.log(sum_houses);
 	for (var i = 0; i < points.length; ++i) {
-		global_ratio.push( Math.round([points[i][0], points[i][1], (sum_houses[points[i][0]] - points[i][2])*global_buildings[points[i][0]] / sum_houses[points[i][0]]]));
+		global_ratio.push( [points[i][0], points[i][1], 
+			Math.round(global_buildings[points[i][0]] * points[i][2]/ sum_houses[points[i][0]])]);
 	}
 }
 
