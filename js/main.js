@@ -333,7 +333,12 @@ function getBuildingsInView() {
 
 function startSimulation()
 {
-	
+	for(var i = 0; i < buildings_in_view.length; i++)
+	{
+		var pos = buildings_in_view[i].poly[0];
+		var stations = findNearStations(parseFloat(pos[0]), parseFloat(pos[1]));
+		console.log(pos, stations);
+	}
 }
 
 function listBuildingsInView() {
