@@ -34,6 +34,10 @@ function simulate2points(x1, y1, x2, y2)//log, lat
 	console.log(idx, target);
 	var graph = new Graph(global_graphs, global_roads);
 	var path = graph.findShortestPath(idx, target);
+	if(path[path.length-1]!=target)
+	{
+		path.push(target);
+	}
 	console.log(path);
 	if(path.length==0)
 	{
@@ -74,7 +78,6 @@ function simulate2points(x1, y1, x2, y2)//log, lat
 		}
 	}
 	pos_arr[pos_idx] = new point(parseFloat(tmp_point['@lon']), parseFloat(tmp_point['@lat']));
-	pos_arr[pos_idx+1] = new point(parseFloat(x2), parseFloat(y2));
 	// console.log(pos_arr);
 	var eps = 0.000001;
 	for(var i = 0; i < pos_arr.length; i++)

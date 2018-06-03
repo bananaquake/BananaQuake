@@ -83,8 +83,8 @@ map.addControl(geocoder);
 // 	// overlay.setPosition(coord);
 // });
 
-// init();
-// pos_arr = simulate2points(centerx, centery, parseFloat(global_pubs[0][0]), parseFloat(global_pubs[0][1]));
+init();
+pos_arr = simulate2points(centerx, centery, parseFloat(global_pubs[0][0]), parseFloat(global_pubs[0][1]));
 
 // pos_arr = result[1];
 // agent_path = result[0];
@@ -277,7 +277,7 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	// drawPeople( time);
+	drawPeople( time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -287,11 +287,11 @@ function drawFrame() {
 // 	var road = global_roads[road_idx];
 // 	console.log(road);
 // }
-// for(var i = 0; i < pos_arr.length-1; i++)
-// {
-// 	var p1 = pos_arr[i], p2 = pos_arr[i+1];
-// 	drawLine(p1.x, p1.y, p2.x, p2.y);
-// }
+for(var i = 0; i < pos_arr.length-1; i++)
+{
+	var p1 = pos_arr[i], p2 = pos_arr[i+1];
+	drawLine(p1.x, p1.y, p2.x, p2.y);
+}
 
 // window.onresize = function() {
 // 	drawFrame();
@@ -329,6 +329,11 @@ function getBuildingsInView() {
 		}
 		// }
 	}
+}
+
+function startSimulation()
+{
+	
 }
 
 function listBuildingsInView() {

@@ -1,6 +1,6 @@
 //area: {houseID: house_area, houseID2: house_area2}
 function calNum(area) {
-	return Math.round(10 * area / 15);
+	return Math.round(Math.pow(area, 2) / 15);
 	// global_nums = {};
 	// for (var key in area) {
 	// 	global_nums[key] = Math.pow(area[key], 2) / 15;
