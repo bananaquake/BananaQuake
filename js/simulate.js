@@ -16,42 +16,28 @@ function find_s(x, y)
 	}
 	return minid;
 }
-function simulate2points(x1, y1, x2, y2)//log, lat
+function sample(path)
 {
-	console.log(x1, y1, x2, y2);
-	var idx = find_s(x1, y1);
-	if(idx=='-1')
-	{
-		console.log('holly shit!', x1, y1);
-		return ;
-	}
-	var target = find_s(x2, y2);
-	if(target=='-1')
-	{
-		console.log('holly shit target!', x1, y1);
-		return ;
-	}
-	console.log(idx, target);
-	var graph = new Graph(global_graphs, global_roads);
-	var path = graph.findShortestPath(idx, target);
-	if(path[path.length-1]!=target)
-	{
-		path.push(target);
-	}
-	console.log(path);
-	if(path.length==0)
-	{
-		console.log('No result!', x1, y1);
-		return ;
-	}
-
 	var point = makeStruct("x y");
 	var pos_arr = new Array();
-	pos_arr[0] = new point(x1, y1);
-	var idx = 1, pos_idx = 1;
+	// pos_arr[0] = new point(x1, y1);
+	var idx = 1, pos_idx = 0;
 	var tmp_point = global_points[path[0]], nxt_point = global_points[path[idx]];
 	// console.log(tmp_point);
+	var vflag1 = Math.ceil(Math.random()*10)%2;
+	var vflag2 = Math.ceil(Math.random()*10);
 	var velocity = 0.00005;
+	var veps = 0.000001;
+	if(vflag1==0)
+	{
+		velocity += vflag2*veps;
+	}
+	else
+	{
+		velocity -= vflag2*veps;
+	}
+	if(velocity<0)
+		velocity = 0.00005;
 	while(idx < path.length)
 	{
 		pos_arr[pos_idx] = new point(parseFloat(tmp_point['@lon']), parseFloat(tmp_point['@lat']));
@@ -79,34 +65,96 @@ function simulate2points(x1, y1, x2, y2)//log, lat
 	}
 	pos_arr[pos_idx] = new point(parseFloat(tmp_point['@lon']), parseFloat(tmp_point['@lat']));
 	// console.log(pos_arr);
-	var eps = 0.000001;
-	for(var i = 0; i < pos_arr.length; i++)
+	var eps = 0.00001;
+
+	var flag1 = Math.ceil(Math.random()*10)%2;
+	var flag2 = Math.ceil(Math.random()*10);
+	var flag3 = Math.ceil(Math.random()*10)%2;
+	var flag4 = Math.ceil(Math.random()*10);
+	for(var k = 0; k < pos_arr.length; k++)
 	{
-		var flag1 = Math.ceil(Math.random()*10)%2;
-		var flag2 = Math.ceil(Math.random()*10);
+		var nx, ny;
 		// console.log(flag1, flag2);
 		if(flag1==0)
 		{
 			// console.log(pos_arr[i].x, pos_arr[i].x+flag2*eps);
-			pos_arr[i].x = pos_arr[i].x+flag2*eps;
+			nx = pos_arr[k].x+flag2*eps;
 			// console.log(pos_arr[i].x);
 		}
 		else
 		{
-			pos_arr[i].x = pos_arr[i].x-flag2*eps;
+			nx = pos_arr[k].x-flag2*eps;
 		}
-		flag1 = Math.ceil(Math.random()*10)%2;
-		flag2 = Math.ceil(Math.random()*10);
-		if(flag1==0)
+		if(flag3==0)
 		{
-			pos_arr[i].y = pos_arr[i].y+flag2*eps;
+			ny = pos_arr[k].y+flag4*eps;
 		}
 		else
 		{
-			pos_arr[i].y = pos_arr[i].y-flag2*eps;
+			ny = pos_arr[k].y-flag4*eps;
 		}
+		pos_arr[k] = new point(nx, ny);				
 	}
 	return pos_arr;
+}
+function simulate2points(x1, y1, x2, y2)//log, lat
+{
+	// console.log(x1, y1, x2, y2);
+	var idx = find_s(x1, y1);
+	if(idx=='-1')
+	{
+		console.log('holly shit!', x1, y1);
+		return ;
+	}
+	var target = find_s(x2, y2);
+	if(target=='-1')
+	{
+		console.log('holly shit target!', x1, y1);
+		return ;
+	}
+	// console.log(idx, target);
+	var graph = new Graph(global_graphs, global_roads);
+	var path = graph.findShortestPath(idx, target);
+	// if(path[path.length-1]!=target)
+	// {
+	// 	path.push(target);
+	// }
+	// console.log(path);
+	if(path.length==0)
+	{
+		console.log('No result!', x1, y1);
+		return ;
+	}
+	return path;
+
+	
+	// for(var i = 0; i < pos_arr.length; i++)
+	// {
+	// 	var flag1 = Math.ceil(Math.random()*10)%2;
+	// 	var flag2 = Math.ceil(Math.random()*10);
+	// 	// console.log(flag1, flag2);
+	// 	if(flag1==0)
+	// 	{
+	// 		// console.log(pos_arr[i].x, pos_arr[i].x+flag2*eps);
+	// 		pos_arr[i].x = pos_arr[i].x+flag2*eps;
+	// 		// console.log(pos_arr[i].x);
+	// 	}
+	// 	else
+	// 	{
+	// 		pos_arr[i].x = pos_arr[i].x-flag2*eps;
+	// 	}
+	// 	flag1 = Math.ceil(Math.random()*10)%2;
+	// 	flag2 = Math.ceil(Math.random()*10);
+	// 	if(flag1==0)
+	// 	{
+	// 		pos_arr[i].y = pos_arr[i].y+flag2*eps;
+	// 	}
+	// 	else
+	// 	{
+	// 		pos_arr[i].y = pos_arr[i].y-flag2*eps;
+	// 	}
+	// }
+	// return pos_arr;
 
 }
 function simulate()

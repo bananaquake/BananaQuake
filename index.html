@@ -5,7 +5,7 @@
 	<link rel="stylesheet" href="https://openlayers.org/en/v4.6.5/css/ol.css" type="text/css">
 	<style>
 	</style>
-	<title></title>
+	<title>Bananalytics: Business Location Predictive Analytics</title>
 	<!--Import materialize.css-->
 	<link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
 	<link href="https://cdn.jsdelivr.net/npm/ol-geocoder@latest/dist/ol-geocoder.min.css" rel="stylesheet">
@@ -38,14 +38,18 @@
 				</div>
 			</div>
 			<div id="right-panel" class="col s3">
-				<a class="waves-effect waves-light btn" onclick="getBuildingsInView(); listBuildingsInView();">
-					<i class="material-icons left">home</i>Find Buildings
-				</a>
-				<a class="waves-effect waves-light btn" onclick="startSimulation();">
-					<i class="material-icons left">home</i>Start Simulation
-				</a>
+				<div id="find-button">
+					<a class="waves-effect waves-light btn" onclick="getBuildingsInView(); listBuildingsInView();">
+						<i class="material-icons left">home</i>Find Buildings
+					</a>
+				</div>
+				<div id="start-button" style="display: none;">
+					<a class="waves-effect waves-light btn" onclick="startSimulation();">
+						<i class="material-icons left">accessibility</i>calculate foot traffic
+					</a>
+				</div>
 				<div class="">
-					<ul id="buildings-container" class="collection"></ul>
+					<div id="buildings-container" class="collection" onmouseout="global_tooltip = null;"></div>
 				</div>
 
 			</div>
