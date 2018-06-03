@@ -336,11 +336,45 @@ function getBuildingsInView() {
 	}
 }
 
+function draw_heatmap()
+{
+	var road_weight = {};
+	for(var i = 0; i < all_path.length; i++)
+	{
+		var path = all_path[i];
+		for(var j = 0; j < path.length-1; j++)
+		{
+			var id1 = path[j], id2 = path[j+1];
+			var road_idx = global_graphs[id1][id2];
+			var road = global_roads[road_idx];
+			var str_idx = ''+road_idx;
+			if(str_idx in road_weight)
+				road_weight[str_idx] += all_number[i];
+			else
+				road_weight[str_idx] = all_number[i];
+		}
+	}
+	var weight_lst = []
+	for(var key in road_weight)
+	{
+		var road_idx = parseInt(key);console.log(road_idx);
+		var road = global_roads[road_idx];
+		console.log(road.u);
+		var p1 = global_points[''+road.u], p2 = global_points[road.v];
+		console.log(p1);
+		weight_lst.push([[parseFloat(p1['@lat']), parseFloat(p1['@lon'])],[parseFloat(p2['@lat']), parseFloat(p2['@lon'])],road_weight[key]]);
+	}
+	console.log(weight_lst);
+	calHeat(weight_lst);
+}
+
 function startSimulation()
 {
 	var bbpair = [];
 	var coorpair = [];
 	all_agent = [];
+	all_path = [];
+	all_number = [];
 	for(var i = 0; i < buildings_in_view.length; i++)
 	{
 		var pos = buildings_in_view[i].poly[0];
@@ -361,6 +395,8 @@ function startSimulation()
 		if(i>500)break;
 		var pair = coorpair[i];
 		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
+		all_path.push(path);
+		all_number.push(global_ratio[i][2]);
 		// var pos_arr = simulate2points(pair[0], pair[1], pair[2], pair[3]);
 		// all_agent.push(pos_arr);
 		for(var j = 0; j < global_ratio[i][2]; j++)
@@ -379,9 +415,11 @@ function startSimulation()
 			
 			all_agent.push(nxt_pos_arr);
 		}
+		break;
 	}
 	global_flag = true;
 	time = 0;
+	draw_heatmap();
 }
 
 function listBuildingsInView() {
