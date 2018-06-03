@@ -407,6 +407,9 @@ function listBuildingsInView() {
 	$('#buildings-container').html('');
 	var count = 0;
 	$('#buildings-container').show();
+	buildings_in_view.sort(function(a, b) {
+		return -a.area + b.area;
+	});
 	for (var i = 0; i < buildings_in_view.length; i++) {
 		if (buildings_in_view[i].name) {
 			count++;
