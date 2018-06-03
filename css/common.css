@@ -131,3 +131,7 @@ footer.page-footer {
 .collection-item {
 	color: black!important;
 }
+
+#main-row {
+	margin-top: 1.5rem;
+}
