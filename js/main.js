@@ -1,9 +1,9 @@
-var nb;// = 40.0093;
-var sb;// = 39.9854;
-var wb;// = 116.3485;
-var eb;// = 116.3953;
-var centerx = 116.3907817;//(wb + eb) / 2;
-var centery = 39.9174311;//(nb + sb) / 2;
+var nb; // = 40.0093;
+var sb; // = 39.9854;
+var wb; // = 116.3485;
+var eb; // = 116.3953;
+var centerx = 116.3907817; //(wb + eb) / 2;
+var centery = 39.9174311; //(nb + sb) / 2;
 
 var WIDTH = 1800;
 var HEIGHT = 1200;
@@ -228,16 +228,22 @@ function drawBoundary() {
 	drawLine(wb, nb, wb, sb);
 }
 
+var img = new Image();
+img.src = 'img/person.png';
+
 function drawOnePerson(x, y) {
-	if(x < 0)
+	if (x < 0)
 		return;
 	var p = coordRealToCanvas(x, y);
 	x = p[0];
 	y = p[1];
-	var size = 8;
+	var size = 18;
 	ctx.save();
 	ctx.fillStyle = "rgba(255, 167, 39, 1)";
-	ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
+	// ctx.font = "bold 24px Arial";
+	// ctx.fillRect(x - 1, y - 1, size * 2 + 1, size * 2 + 1);
+	ctx.drawImage(img, x - size, y - size, size * 2 + 1, size * 2 + 1);
+
 	ctx.restore();
 }
 
@@ -255,10 +261,8 @@ function drawPeople() {
 	// {
 	// 	drawOnePerson(pos_arr[time].x, pos_arr[time].y);
 	// }
-	for(var i = 0; i < all_agent.length; i++)
-	{
-		if(time < all_agent[i].length)
-		{
+	for (var i = 0; i < all_agent.length; i++) {
+		if (time < all_agent[i].length) {
 			drawOnePerson(all_agent[i][time].x, all_agent[i][time].y);
 		}
 		// else
@@ -298,7 +302,7 @@ function drawFrame() {
 		drawStations();
 	}
 	drawTooltip();
-	if(global_flag)
+	if (global_flag)
 		drawPeople(time);
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -320,18 +324,19 @@ function drawFrame() {
 
 window.setInterval(function() {
 	drawFrame();
-	if(global_flag)
+	if (global_flag)
 		time += 1;
 }, 50);
 
 function inView(s) {
 	return s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb;
 }
+
 function inView2(s) {
-	var w = (eb-wb)/4+wb;
-	var e = eb-(eb-wb)/4;
-	var ss = (nb-sb)/4+sb;
-	var n = nb-(nb-sb)/4;
+	var w = (eb - wb) / 4 + wb;
+	var e = eb - (eb - wb) / 4;
+	var ss = (nb - sb) / 4 + sb;
+	var n = nb - (nb - sb) / 4;
 	return s[0] >= w && s[0] <= e && s[1] >= ss && s[1] <= n;
 }
 
@@ -363,53 +368,52 @@ function getBuildingsInView() {
 	}
 }
 
-function draw_heatmap()
-{
+function draw_heatmap() {
 	var road_weight = {};
-	for(var i = 0; i < all_path.length; i++)
-	{
+	for (var i = 0; i < all_path.length; i++) {
 		var path = all_path[i];
-		for(var j = 0; j < path.length-1; j++)
-		{
-			var id1 = path[j], id2 = path[j+1];
+		for (var j = 0; j < path.length - 1; j++) {
+			var id1 = path[j],
+				id2 = path[j + 1];
 			var road_idx = global_graphs[id1][id2];
 			var road = global_roads[road_idx];
-			var str_idx = ''+road_idx;
-			if(str_idx in road_weight)
+			var str_idx = '' + road_idx;
+			if (str_idx in road_weight)
 				road_weight[str_idx] += all_number[i];
 			else
 				road_weight[str_idx] = all_number[i];
 		}
 	}
 	var weight_lst = []
-	for(var key in road_weight)
-	{
-		var road_idx = parseInt(key);console.log(road_idx);
+	for (var key in road_weight) {
+		var road_idx = parseInt(key);
+		// console.log(road_idx);
 		var road = global_roads[road_idx];
-		console.log(road.u);
-		var p1 = global_points[''+road.u], p2 = global_points[road.v];
-		console.log(p1);
-		weight_lst.push([[parseFloat(p1['@lat']), parseFloat(p1['@lon'])],[parseFloat(p2['@lat']), parseFloat(p2['@lon'])],road_weight[key]]);
+		// console.log(road.u);
+		var p1 = global_points['' + road.u],
+			p2 = global_points[road.v];
+		// console.log(p1);
+		weight_lst.push([
+			[parseFloat(p1['@lat']), parseFloat(p1['@lon'])],
+			[parseFloat(p2['@lat']), parseFloat(p2['@lon'])], road_weight[key]
+		]);
 	}
 	// console.log(weight_lst);
 	calHeat(weight_lst);
 }
 
-function startSimulation()
-{
+function startSimulation() {
 	var bbpair = [];
 	var coorpair = [];
 	all_agent = [];
 	all_path = [];
 	all_number = [];
-	for(var i = 0; i < buildings_in_view.length; i++)
-	{
+	for (var i = 0; i < buildings_in_view.length; i++) {
 		var pos = buildings_in_view[i].center;
 		var stations = findNearStations(parseFloat(pos[0]), parseFloat(pos[1]));
 		// console.log(pos, stations);
-		for(var j = 0; j < stations.length; j++)
-		{
-			var dist = 1.0/getLength(parseFloat(pos[0]), parseFloat(pos[1]), parseFloat(stations[j][0]), parseFloat(stations[j][1]));
+		for (var j = 0; j < stations.length; j++) {
+			var dist = 1.0 / getLength(parseFloat(pos[0]), parseFloat(pos[1]), parseFloat(stations[j][0]), parseFloat(stations[j][1]));
 			bbpair.push([buildings_in_view[i].id, stations[j][3], dist]);
 			coorpair.push([parseFloat(stations[j][0]), parseFloat(stations[j][1]), parseFloat(pos[0]), parseFloat(pos[1])]);
 		}
@@ -418,32 +422,33 @@ function startSimulation()
 	// console.log(global_ratio);
 	var point = makeStruct("x y");
 	console.log(global_ratio.length);
-	for(var i = 0; i < global_ratio.length; i++)
-	{
-		if(i%10==0)
+	for (var i = 0; i < global_ratio.length; i++) {
+		if (i % 10 == 0)
 			console.log(i);
-		if(i>1000)break;
+		if (i > 1000) break;
 		var pair = coorpair[i];
 		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
-		if(path.length<3)continue;
-		var p1 = global_points[path[0]], p2 = global_points[path[path.length-1]];
+		if (path.length < 3) continue;
+		var p1 = global_points[path[0]],
+			p2 = global_points[path[path.length - 1]];
 		var total_dist = getLength(pair[2], pair[3], parseFloat(p2['@lon']), parseFloat(p2['@lat']));
-		if(total_dist>1500)continue;
+		if (total_dist > 1500) continue;
+		total_dist = getLength(parseFloat(p1['@lon']), parseFloat(p1['@lat']),
+			parseFloat(p2['@lon']), parseFloat(p2['@lat']));
+		console.log(total_dist);
+		if (total_dist < 350) continue;
 		all_path.push(path);
 		all_number.push(global_ratio[i][2]);
 		// var pos_arr = simulate2points(pair[0], pair[1], pair[2], pair[3]);
 		// all_agent.push(pos_arr);
-		for(var j = 0; j < Math.max(global_ratio[i][2], 100); j++)
-		{
+		for (var j = 0; j < Math.max(global_ratio[i][2], 100); j++) {
 			var pos_arr = sample(path);
 			var step = Math.round(random(1, 500));
 			var nxt_pos_arr = new Array();
-			for(var k = 0; k < step; k++)
-			{
+			for (var k = 0; k < step; k++) {
 				nxt_pos_arr.push(new point(-1, -1));
 			}
-			for(var k = 0; k < pos_arr.length; k++)
-			{
+			for (var k = 0; k < pos_arr.length; k++) {
 				nxt_pos_arr.push(pos_arr[k]);
 			}
 
