@@ -11,6 +11,7 @@ var HEIGHT = 1200;
 var isDragging = false;
 var dragStart = [];
 var dragEnd = [];
+var global_flag = false;
 
 // var data = init();
 
@@ -84,7 +85,7 @@ map.addControl(geocoder);
 // });
 
 init();
-pos_arr = simulate2points(centerx, centery, parseFloat(global_pubs[0][0]), parseFloat(global_pubs[0][1]));
+// pos_arr = simulate2points(centerx, centery, parseFloat(global_pubs[0][0]), parseFloat(global_pubs[0][1]));
 
 // pos_arr = result[1];
 // agent_path = result[0];
@@ -214,6 +215,8 @@ function drawBoundary() {
 }
 
 function drawOnePerson(x, y) {
+	if(x < 0)
+		return;
 	var p = coordRealToCanvas(x, y);
 	x = p[0];
 	y = p[1];
@@ -235,21 +238,21 @@ function drawPeople() {
 	// 	drawOnePerson(people[i][0], people[i][1]);
 	// }
 
-	if(time < pos_arr.length)
+	// if(time < pos_arr.length)
+	// {
+	// 	drawOnePerson(pos_arr[time].x, pos_arr[time].y);
+	// }
+	for(var i = 0; i < all_agent.length; i++)
 	{
-		drawOnePerson(pos_arr[time].x, pos_arr[time].y);
+		if(time < all_agent[i].length)
+		{
+			drawOnePerson(all_agent[i][time].x, all_agent[i][time].y);
+		}
+		else
+		{
+			drawOnePerson(all_agent[i][all_agent[i].length-1].x, all_agent[i][all_agent[i].length-1].y);
+		}
 	}
-	// for(var i = 0; i < pos_arr.length; i++)
-	// {
-	// 	if(time < pos_arr[i].length)
-	// 	{
-	// 		drawOnePerson(pos_arr[i][time].x, pos_arr[i][time].y);
-	// 	}
-	// else
-	// {
-	// drawOnePerson(pos_arr[i][pos_arr[i].length-1].x, pos_arr[i][pos_arr[i].length-1].y);
-	// }
-	// }
 
 }
 
@@ -277,7 +280,8 @@ function drawFrame() {
 	ctx.clearRect(0, 0, WIDTH, HEIGHT);
 	// drawBoundary();
 	drawDrag();
-	drawPeople( time);
+	if(global_flag)
+		drawPeople( time);
 	// drawStations();
 }
 // for(var i = 0; i < agent_path.length-1; i++)
@@ -287,11 +291,11 @@ function drawFrame() {
 // 	var road = global_roads[road_idx];
 // 	console.log(road);
 // }
-for(var i = 0; i < pos_arr.length-1; i++)
-{
-	var p1 = pos_arr[i], p2 = pos_arr[i+1];
-	drawLine(p1.x, p1.y, p2.x, p2.y);
-}
+// for(var i = 0; i < pos_arr.length-1; i++)
+// {
+// 	var p1 = pos_arr[i], p2 = pos_arr[i+1];
+// 	drawLine(p1.x, p1.y, p2.x, p2.y);
+// }
 
 // window.onresize = function() {
 // 	drawFrame();
@@ -299,7 +303,8 @@ for(var i = 0; i < pos_arr.length-1; i++)
 
 window.setInterval(function() {
 	drawFrame();
-	time += 1;
+	if(global_flag)
+		time += 1;
 }, 50);
 
 function inView(s) {
@@ -333,12 +338,50 @@ function getBuildingsInView() {
 
 function startSimulation()
 {
+	var bbpair = [];
+	var coorpair = [];
+	all_agent = [];
 	for(var i = 0; i < buildings_in_view.length; i++)
 	{
 		var pos = buildings_in_view[i].poly[0];
 		var stations = findNearStations(parseFloat(pos[0]), parseFloat(pos[1]));
-		console.log(pos, stations);
+		// console.log(pos, stations);
+		for(var j = 0; j < stations.length; j++)
+		{
+			var dist = 1.0/getLength(parseFloat(pos[0]), parseFloat(pos[1]), parseFloat(stations[j][0]), parseFloat(stations[j][1]));
+			bbpair.push([buildings_in_view[i].id, stations[j][3], dist]);
+			coorpair.push([parseFloat(stations[j][0]), parseFloat(stations[j][1]), parseFloat(pos[0]), parseFloat(pos[1])]);
+		}
 	}
+	calRatio(bbpair);
+	// console.log(global_ratio);
+	var point = makeStruct("x y");
+	for(var i = 0; i < global_ratio.length; i++)
+	{
+		if(i>500)break;
+		var pair = coorpair[i];
+		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
+		// var pos_arr = simulate2points(pair[0], pair[1], pair[2], pair[3]);
+		// all_agent.push(pos_arr);
+		for(var j = 0; j < global_ratio[i][2]; j++)
+		{
+			var pos_arr = sample(path);
+			var step = Math.round(random(1, 1000));
+			var nxt_pos_arr = new Array();
+			for(var k = 0; k < step; k++)
+			{
+				nxt_pos_arr.push(new point(-1, -1));
+			}
+			for(var k = 0; k < pos_arr.length; k++)
+			{
+				nxt_pos_arr.push(pos_arr[k]);
+			}
+			
+			all_agent.push(nxt_pos_arr);
+		}
+	}
+	global_flag = true;
+	time = 0;
 }
 
 function listBuildingsInView() {
