@@ -29,22 +29,30 @@ function calRatio(points) {
 function calHeat(points) {
 	var data = new ol.source.Vector();
 	for (var i = 0; i < points.length; ++i) {
-		var points = [
-			ol.proj.transform([points[i][0][0], points[i][0][1]], 'EPSG:4326', 'EPSG:3857'),
-			ol.proj.transform([points[i][1][0], points[i][1][1]], 'EPSG:4326', 'EPSG:3857')
-		]
+		//console.log(points[i][0][0],points[i][0][1],points[i][1][0],points[i][1][1]);
+		var lonLat = new ol.geom.Point(ol.proj.transform([(points[i][1][1]+points[i][0][1])/2, (points[i][0][0]+points[i][1][0])/2], 'EPSG:4326', 'EPSG:3857'));
 		
 		var pointFeature = new ol.Feature({
-			geometry: new ol.geom.LineString(points),
+			geometry: lonLat,
 			weight: points[i][2]
 		});
-
 		data.addFeature(pointFeature);
-
+		lonLat = new ol.geom.Point(ol.proj.transform([(points[i][1][1]+points[i][0][1])/2, (points[i][0][0]+points[i][1][0])/2], 'EPSG:4326', 'EPSG:3857'));
+		pointFeature = new ol.Feature({
+			geometry: lonLat,
+			weight: points[i][2]
+		});
+		data.addFeature(pointFeature);
+		lonLat = new ol.geom.Point(ol.proj.transform([(points[i][1][1]+points[i][0][1])/2, (points[i][0][0]+points[i][1][0])/2], 'EPSG:4326', 'EPSG:3857'));
+		pointFeature = new ol.Feature({
+			geometry: lonLat,
+			weight: points[i][2]
+		});
+		data.addFeature(pointFeature);
 	}
 	heatMapLayer = new ol.layer.Heatmap({
 		source: data,
-		radius: 10
+		radius: 7
 	});
 	map.addLayer(heatMapLayer);
 }

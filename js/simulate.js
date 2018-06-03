@@ -25,7 +25,7 @@ function sample(path)
 	var tmp_point = global_points[path[0]], nxt_point = global_points[path[idx]];
 	// console.log(tmp_point);
 	var vflag1 = Math.ceil(Math.random()*10)%2;
-	var vflag2 = Math.ceil(Math.random()*10);
+	var vflag2 = Math.ceil(Math.random()*6);
 	var velocity = 0.00005;
 	var veps = 0.000001;
 	if(vflag1==0)

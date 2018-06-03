@@ -154,7 +154,7 @@ function findNearStations(x, y) {
 	var result = [];
 	for (var i = 0; i < global_pubs.length; i++) {
 		var l = getLength(x, y, parseFloat(global_pubs[i][0]), parseFloat(global_pubs[i][1]));
-		if (l <= 2500) {
+		if (l <= 1500) {
 			result.push(global_pubs[i]);
 		}
 	}
@@ -261,10 +261,10 @@ function drawPeople() {
 		{
 			drawOnePerson(all_agent[i][time].x, all_agent[i][time].y);
 		}
-		else
-		{
-			drawOnePerson(all_agent[i][all_agent[i].length-1].x, all_agent[i][all_agent[i].length-1].y);
-		}
+		// else
+		// {
+		// 	drawOnePerson(all_agent[i][all_agent[i].length-1].x, all_agent[i][all_agent[i].length-1].y);
+		// }
 	}
 
 }
@@ -327,6 +327,13 @@ window.setInterval(function() {
 function inView(s) {
 	return s[0] >= wb && s[0] <= eb && s[1] >= sb && s[1] <= nb;
 }
+function inView2(s) {
+	var w = (eb-wb)/4+wb;
+	var e = eb-(eb-wb)/4;
+	var ss = (nb-sb)/4+sb;
+	var n = nb-(nb-sb)/4;
+	return s[0] >= w && s[0] <= e && s[1] >= ss && s[1] <= n;
+}
 
 
 
@@ -337,7 +344,7 @@ function getBuildingsInView() {
 		var polys = buildings[i].geometry.coordinates;
 		// for (var j = 0; j < polys.length; j++) {
 		var j = 0;
-		if (polys[j].length && inView(polys[j][0])) {
+		if (polys[j].length && inView2(polys[j][0])) {
 			var area = getPolyArea(polys[j]);
 			var center = getPolyCenter(polys[j]);
 			var building = {
@@ -383,7 +390,7 @@ function draw_heatmap()
 		console.log(p1);
 		weight_lst.push([[parseFloat(p1['@lat']), parseFloat(p1['@lon'])],[parseFloat(p2['@lat']), parseFloat(p2['@lon'])],road_weight[key]]);
 	}
-	console.log(weight_lst);
+	// console.log(weight_lst);
 	calHeat(weight_lst);
 }
 
@@ -396,7 +403,7 @@ function startSimulation()
 	all_number = [];
 	for(var i = 0; i < buildings_in_view.length; i++)
 	{
-		var pos = buildings_in_view[i].poly[0];
+		var pos = buildings_in_view[i].center;
 		var stations = findNearStations(parseFloat(pos[0]), parseFloat(pos[1]));
 		// console.log(pos, stations);
 		for(var j = 0; j < stations.length; j++)
@@ -409,11 +416,15 @@ function startSimulation()
 	calRatio(bbpair);
 	// console.log(global_ratio);
 	var point = makeStruct("x y");
+	console.log(global_ratio.length);
 	for(var i = 0; i < global_ratio.length; i++)
 	{
+		if(i%10==0)
+			console.log(i);
 		if(i>500)break;
 		var pair = coorpair[i];
 		var path = simulate2points(pair[0], pair[1], pair[2], pair[3]);
+		if(path.length<3)continue;
 		all_path.push(path);
 		all_number.push(global_ratio[i][2]);
 		// var pos_arr = simulate2points(pair[0], pair[1], pair[2], pair[3]);
@@ -434,7 +445,7 @@ function startSimulation()
 
 			all_agent.push(nxt_pos_arr);
 		}
-		break;
+		// break;
 	}
 	global_flag = true;
 	time = 0;
